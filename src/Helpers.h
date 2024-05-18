@@ -1,7 +1,6 @@
-#ifndef TETRIS_HELPERS_H
-#define TETRIS_HELPERS_H
+#pragma once
 
-class Mod4 {
+class RotationAmount {
 private:
     int currCount;
 public:
@@ -9,7 +8,7 @@ public:
         currCount = n;
     }
 
-    Mod4() {
+    RotationAmount() {
         currCount = 0;
     }
 
@@ -30,5 +29,3 @@ void fill(char (&dest)[5][5], char src[5][5]) {
         }
     }
 }
-
-#endif //TETRIS_HELPERS_H

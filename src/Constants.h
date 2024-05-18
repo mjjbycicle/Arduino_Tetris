@@ -1,6 +1,3 @@
 #ifndef TETRIS_CONSTANTS_H
 #define TETRIS_CONSTANTS_H
-#define X_IN A3
-#define Y_IN A4
-#define JOYSTICK_BUTTON 12
 #endif //TETRIS_CONSTANTS_H

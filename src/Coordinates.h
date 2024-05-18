@@ -1,51 +1,44 @@
 #ifndef TETRIS_COORDINATES_H
 #define TETRIS_COORDINATES_H
 
-class Coordinate {
+class point {
 private:
-    int x, y;
+	int8_t x_, y_;
 public:
-    void set(int x, int y) {
-        this->x = x;
-        this->y = y;
-    }
+	point () : point(0, 0) {}
+	point (int8_t x, int8_t y) : x_(x), y_(y) {}
 
-    Coordinate() {
-        this->x = 0;
-        this->y = 0;
-    }
+	int8_t x () const {
+		return x_;
+	}
 
-    int getX() {
-        return x;
-    }
+	int8_t& x () {
+		return x_;
+	}
 
-    int getY() {
-        return y;
-    }
+	int8_t y () const {
+		return y_;
+	}
 
-    int getBoardX() {
-        return y;
-    }
+	int8_t& y () {
+		return y_;
+	}
 
-    int getBoardY() {
-        return 15 - x;
-    }
+	void moveUp () {
+		y_--;
+	}
 
-    void moveUp() {
-        y--;
-    }
+	void moveDown () {
+		y_++;
+	}
 
-    void moveDown() {
-        y++;
-    }
+	void moveRight () {
+		x_++;
+	}
 
-    void moveRight() {
-        x++;
-    }
-
-    void moveLeft() {
-        x--;
-    }
+	void moveLeft () {
+		x_--;
+	}
 };
 
 #endif //TETRIS_COORDINATES_H

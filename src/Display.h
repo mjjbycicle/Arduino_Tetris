@@ -6,13 +6,12 @@
 #include "Blocks.h"
 #include "Helpers.h"
 #include "util.h"
+#include "matrix.h"
 
-template <uint8_t width, uint8_t height>
+template <int8_t width, int8_t height>
 class Display {
-	RGBmatrixPanel panel;
-	char _matrix[height][width] {};
-
 public:
+	using matrix_t = Matrix<width, height, char>;
 
 	Display (pin clock, pin outputEnable, pin latch, pin lineSelectorA, pin lineSelectorB, pin lineSelectorC) : panel(
 		lineSelectorA.get(), lineSelectorB.get(), lineSelectorC.get(),
@@ -22,12 +21,12 @@ public:
 		panel.setRotation(1);
 	}
 
-	const char (& (matrix) () const )[height][width] {
-		return _matrix;
+	const matrix_t& matrix() const {
+		return matrix_;
 	}
 
-	char (& (matrix) ())[height][width] {
-		return _matrix;
+	matrix_t& matrix () {
+		return matrix_;
 	}
 
 	void setup () {
@@ -35,11 +34,15 @@ public:
 	}
 
 	void update () {
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				uint16_t color = getColor(_matrix[y][x]);
+		for (int8_t y = 0; y < height; y++) {
+			for (int8_t x = 0; x < width; x++) {
+				uint16_t color = getColor(matrix_(x, y));
 				panel.drawPixel(x, y, color);
 			}
 		}
 	}
+
+private:
+	RGBmatrixPanel panel;
+	matrix_t matrix_;
 };
