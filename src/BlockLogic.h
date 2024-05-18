@@ -43,7 +43,7 @@ public:
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
                 char currChar = currArr[r][c];
-                if (currChar != ' ') {
+                if (currChar !=  0 ) {
                     matrix[r + topRightCorner.getY()][c + topRightCorner.getX()] = currChar;
                 }
             }
@@ -56,8 +56,8 @@ public:
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
                 char currChar = currArr[r][c];
-                if (currChar != ' ') {
-                    matrix[r + topRightCorner.getY()][c + topRightCorner.getX()] = ' ';
+                if (currChar !=  0 ) {
+                    matrix[r + topRightCorner.getY()][c + topRightCorner.getX()] =  0 ;
                 }
             }
         }
@@ -94,10 +94,10 @@ public:
         getDisplayVec(currArr);
         for (int i = 1; i <= 5; i++) {
             for (int j = 0; j < 5; j++) {
-                if (currArr[i - 1][j] != ' '
+                if (currArr[i - 1][j] !=  0
                     and occupiedInMatrix(matrix, topRightCorner.getY() + i, topRightCorner.getX() + j)) {
                     if (i != 5) {
-                        if (currArr[i][j] == ' ') {
+                        if (currArr[i][j] ==  0 ) {
                             return false;
                         }
                     } else
@@ -114,10 +114,10 @@ public:
         int modifier = movingLeft ? -1 : 1;
         for (int i = 0; i < 5; i++) {
             for (int j = modifier; 5 + modifier; j++) {
-                if (currArr[i][j - modifier] != ' '
+                if (currArr[i][j - modifier] !=  0
                     and occupiedInMatrix(matrix, topRightCorner.getY() + i, topRightCorner.getX() + j)) {
                     if (j != -1 and j != 5) {
-                        if (currArr[i][j] == ' ')
+                        if (currArr[i][j] ==  0 )
                             return false;
                     } else
                         return false;
@@ -145,7 +145,7 @@ void rotateOther(char (&dest)[5][5], char block[5][5]) {
     for (int r = 0; r < 5; r++) {
         for (int c = 0; c < 5; c++) {
             if (c == 0 or r == 4) {
-                dest[r][c] = ' ';
+                dest[r][c] =  0 ;
             } else {
                 dest[c - 1][5 - r - 1] = block[r][c];
             }
@@ -169,12 +169,12 @@ bool occupiedInMatrix(char matrix[24][10], int r, int c) {
     if (r == 24) return true;
     if (c == -1) return true;
     if (c == 10) return true;
-    if (matrix[r][c] != ' ') return true;
+    if (matrix[r][c] !=  0 ) return true;
     return false;
 }
 
 bool occupiedInBlock(char matrix[5][5], int r, int c) {
-    if (matrix[r][c] != ' ') return true;
+    if (matrix[r][c] !=  0 ) return true;
     return false;
 }
 
