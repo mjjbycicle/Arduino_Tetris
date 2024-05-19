@@ -114,7 +114,7 @@ public:
 };
 
 
-void rotate3X3 (char (& dest)[5][5], char block[5][5]) {
+void rotate3X3_CW (char (& dest)[5][5], char block[5][5]) {
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
 			dest[i][j] = block[5 - j - 1][i];
@@ -122,7 +122,7 @@ void rotate3X3 (char (& dest)[5][5], char block[5][5]) {
 	}
 }
 
-void rotateOther (char (& dest)[5][5], char block[5][5]) {
+void rotateOI_CW (char (& dest)[5][5], char block[5][5]) {
 	for (int r = 0; r < 5; r++) {
 		for (int c = 0; c < 5; c++) {
 			if (c == 0 or r == 4) {
@@ -134,16 +134,40 @@ void rotateOther (char (& dest)[5][5], char block[5][5]) {
 	}
 }
 
-void rotate (char (& dest)[5][5], char block[5][5], char type) {
+void rotateCW (char (& dest)[5][5], char block[5][5], char type) {
 	if (type == 'Q' or type == 'I') {
-		rotateOther(dest, block);
+        rotateOI_CW(dest, block);
 	} else {
-		rotate3X3(dest, block);
+        rotate3X3_CW(dest, block);
 	}
 }
 
-void rotateNTimes (char (& dest)[5][5], char block[5][5], char type, RotationAmount numRot) {
+void rotate3X3_CCW (char (& dest)[5][5], char block[5][5]) {
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            dest[i][j] = block[j][5 - i - 1];
+        }
+    }
+}
 
+void rotateOI_CCW (char (& dest)[5][5], char block[5][5]) {
+    for (int r = 0; r < 5; r++) {
+        for (int c = 0; c < 5; c++) {
+            if (c == 0 or r == 4) {
+                dest[r][c] = 0;
+            } else {
+                dest[5 - c - 1][r + 1] = block[r][c];
+            }
+        }
+    }
+}
+
+void rotateCCW (char (& dest)[5][5], char block[5][5], char type) {
+    if (type == 'Q' or type == 'I') {
+        rotateOI_CCW(dest, block);
+    } else {
+        rotate3X3_CCW(dest, block);
+    }
 }
 
 template <int8_t matrixWidth, int8_t matrixHeight>
