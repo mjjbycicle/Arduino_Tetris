@@ -10,6 +10,8 @@
 
 template <int8_t width, int8_t height>
 class Display {
+	uint16_t color_palette[256];
+
 public:
 	using matrix_t = Matrix<width, height, char>;
 
@@ -21,8 +23,8 @@ public:
 		panel.setRotation(1);
 	}
 
-	const matrix_t& matrix() const {
-		return matrix_;
+	void setColorInPalette(uint8_t c, uint16_t color) {
+		color_palette[c] = color;
 	}
 
 	matrix_t& matrix () {
@@ -36,8 +38,11 @@ public:
 	void update () {
 		for (int8_t y = 0; y < height; y++) {
 			for (int8_t x = 0; x < width; x++) {
-				uint16_t color = getColor(matrix_(x, y));
-				panel.drawPixel(x, y, color);
+				char color_char = matrix_(x, y);
+
+				uint8_t color_index = reinterpret_cast<uint8_t&>(color_char);
+
+				panel.drawPixel(x, y, color_palette[color_index]);
 			}
 		}
 	}

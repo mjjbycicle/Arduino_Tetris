@@ -1,14 +1,16 @@
-#ifndef TETRIS_COORDINATES_H
-#define TETRIS_COORDINATES_H
+#pragma once
 
-class point {
+class vec {
 private:
 	int8_t x_, y_;
 public:
-	point () : point(0, 0) {}
-	point (int8_t x, int8_t y) : x_(x), y_(y) {}
+	constexpr vec () : vec(0, 0) {}
 
-	int8_t x () const {
+	constexpr vec (int8_t x, int8_t y) : x_(x), y_(y) {}
+
+	constexpr vec (int x, int y) : x_(static_cast<int8_t>(x)), y_(static_cast<int8_t>(y)) {}
+
+	constexpr int8_t x () const {
 		return x_;
 	}
 
@@ -16,7 +18,7 @@ public:
 		return x_;
 	}
 
-	int8_t y () const {
+	constexpr int8_t y () const {
 		return y_;
 	}
 
@@ -39,6 +41,14 @@ public:
 	void moveLeft () {
 		x_--;
 	}
-};
 
-#endif //TETRIS_COORDINATES_H
+	vec& operator+= (const vec& other) {
+		x_ += other.x_; // NOLINT(*-narrowing-conversions)
+		y_ += other.y_; // NOLINT(*-narrowing-conversions)
+		return *this;
+	}
+
+	constexpr vec operator+ (const vec& other) const {
+		return { x_ + other.x_, y_ + other.y_ };
+	}
+};

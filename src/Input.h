@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Constants.h"
-
 namespace input {
 	constexpr uint8_t JOYSTICK_BUTTON = 12;
 	constexpr uint8_t JOYSTICK_X_IN = A3;

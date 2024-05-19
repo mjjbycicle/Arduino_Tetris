@@ -30,6 +30,9 @@ Direction rotateCCW(Direction direction) {
 Direction rotateCW(Direction direction) {
 	return Direction {static_cast<int8_t>((direction.get() - 1) & 3)};
 }
+Direction getInverse(Direction direction) {
+	return Direction {static_cast<int8_t>((4 - direction.get()) & 3)};
+}
 int8_t getDeltaX(Direction direction) {
 	int8_t& i = direction.get();
 	return static_cast<int8_t>(((i & 2) - 1) * (i & 1));
@@ -39,10 +42,10 @@ int8_t getDeltaY(Direction direction) {
 	return static_cast<int8_t>(((i & 2) - 1) * (~i & 1));
 }
 
-static const Direction DIRECTION_U {0};
-static const Direction DIRECTION_L {1};
-static const Direction DIRECTION_D {2};
-static const Direction DIRECTION_R {3};
+static constexpr Direction DIRECTION_U {0};
+static constexpr Direction DIRECTION_L {1};
+static constexpr Direction DIRECTION_D {2};
+static constexpr Direction DIRECTION_R {3};
 
 class Cooldown {
 	const int duration;
