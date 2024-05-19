@@ -1,10 +1,9 @@
 #pragma once
 
 #include <RGBmatrixPanel.h>
-#include "Coordinates.h"
+#include "Vec.h"
 #include "BlockLogic.h"
-#include "Blocks.h"
-#include "Helpers.h"
+#include "sprites.h"
 #include "util.h"
 #include "matrix.h"
 

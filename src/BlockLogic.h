@@ -1,12 +1,17 @@
 #pragma once
 
-#include "Blocks.h"
-#include "Coordinates.h"
-#include "Helpers.h"
+#include "sprites.h"
+#include "Vec.h"
 #include "matrix.h"
 #include "util.h"
 
-vec getRotatedBlockOffset (__attribute__((unused)) char type, vec p, Direction direction) {
+vec getRotatedBlockOffset (char type, vec p, Direction direction) {
+	if(type == 'Q') return p;
+	else if(type == 'I') {
+		return direction.get() & 1 ?
+		   vec { p.y() + 0, 4 - p.x() } :
+		   p;
+	}
 	// Just do rotate3x3 for now
 	return
 		direction == DIRECTION_L ?
@@ -34,14 +39,12 @@ vec rotateOffset (vec offset, Direction direction) {
 }
 
 class Block {
-private:
-	char type;
 
 public:
-	Direction direction;
+	Direction rotation;
 	vec topRightCorner;
 
-	Block (int8_t x, int8_t y, char type, Direction direction) : type(type), direction(direction), topRightCorner(x, y) {}
+	Block (int8_t x, int8_t y, char type, Direction rotation) : type(type), rotation(rotation), topRightCorner(x, y) {}
 
 	template <int8_t matrixWidth, int8_t matrixHeight>
 	void writeToMatrix (Matrix<matrixWidth, matrixHeight, char>& matrix) const {
@@ -50,7 +53,7 @@ public:
 			for (int8_t dx = 0; dx < 5; dx++) {
 				char currChar = blockMatrix(dx, dy);
 				if (currChar) {
-					matrix(topRightCorner + getRotatedBlockOffset(type, { dx, dy }, direction)) = currChar;
+					matrix(topRightCorner + getRotatedBlockOffset(type, { dx, dy }, rotation)) = currChar;
 				}
 			}
 		}
@@ -63,51 +66,57 @@ public:
 			for (int dx = 0; dx < 5; dx++) {
 				char currChar = blockMatrix(dx, dy);
 				if (currChar) {
-					matrix(topRightCorner + getRotatedBlockOffset(type, { dx, dy }, direction)) = 0;
+					matrix(topRightCorner + getRotatedBlockOffset(type, { dx, dy }, rotation)) = 0;
 				}
 			}
 		}
 	}
 
 	template <int8_t matrixWidth, int8_t matrixHeight>
-	bool canMoveInDirection (Matrix<matrixWidth, matrixHeight, char>& matrix, Direction direction) {
-//		const BlockMatrix& blockMatrix = getBlockMatrix(type);
-//
-		int8_t modifierX = getDeltaX(direction);
-		int8_t modifierY = getDeltaY(direction);
-//
-//		for (int8_t dy = 0; dy < 5; dy++) {
-//			for (int8_t dx = 0; dx < 5; dx++) {
-////				vec currBlockOffset = getRotatedBlockOffset(type, {dx, dy}, Direction{static_cast<int8_t>(direction.get() ^ 1)});
-//				vec currBlockOffset = getRotatedBlockOffset(type, {dx, dy}, direction);
-//				vec neighborBlockOffset = currBlockOffset + vec {modifierX, modifierY};
-//
-//				// If this vec is in our block and the neighbor vec is not
-//				if (blockMatrix(currBlockOffset) != 0 && !blockMatrix(neighborBlockOffset)) {
-//					// But the neighbor vec is indeed occupied (or out of bounds)
-//					const vec& neighborPoint = topRightCorner + neighborBlockOffset;
-//
-//					if (!matrix.contains(neighborPoint) || matrix(neighborPoint)) {
-//						// We must be touching another block (or an edge), and therefore cannot move
-//						return false;
-//					}
-//				}
-//			}
-//		}
-//		return true;
+	bool tryApplyModification (Matrix<matrixWidth, matrixHeight, char>& matrix, vec offset, Direction newRotation) {
+		eraseFromMatrix(matrix);
+
+		vec oldCorner = topRightCorner;
+		Direction oldRotation = rotation;
+
+		topRightCorner += offset;
+		rotation = newRotation;
 
 		const BlockMatrix& blockMatrix = getBlockMatrix(type);
-		const vec& offset = vec { modifierX, modifierY };
+		for (int dy = 0; dy < 5; dy++) {
+			for (int dx = 0; dx < 5; dx++) {
+				if (blockMatrix({dx, dy})) {
+					const vec& pos = topRightCorner + getRotatedBlockOffset(type, { dx, dy }, rotation);
+					if(!matrix.contains(pos) || matrix(pos) != 0) {
+						goto modificationFailed;
+					}
+				}
+			}
+		}
+
+		writeToMatrix(matrix);
+		return true;
+
+		modificationFailed:
+		topRightCorner = oldCorner;
+		rotation = oldRotation;
+		writeToMatrix(matrix);
+		return false;
+	}
+
+	template <int8_t matrixWidth, int8_t matrixHeight>
+	bool canMoveInDirection (Matrix<matrixWidth, matrixHeight, char>& matrix, Direction direction) {
+		const BlockMatrix& blockMatrix = getBlockMatrix(type);
+		const vec& offset = getOffset(direction);
 
 		for (int dy = 0; dy < 5; dy++) {
 			for (int dx = 0; dx < 5; dx++) {
 				const vec& currBlockOffset = vec { dx, dy };
 				char currChar = blockMatrix(currBlockOffset);
-
-				char nCurrChar = blockMatrix(currBlockOffset + rotateOffset(offset, getInverse(direction)));
+				char nCurrChar = blockMatrix(currBlockOffset + rotateOffset(offset, getInverse(rotation)));
 
 				if (currChar && !nCurrChar) {
-					vec neighborPoint = topRightCorner + getRotatedBlockOffset(type, { dx, dy }, direction) + offset;
+					vec neighborPoint = topRightCorner + getRotatedBlockOffset(type, { dx, dy }, rotation) + offset;
 					if (!matrix.contains(neighborPoint) || matrix(neighborPoint)) {
 						return false;
 					}
@@ -122,9 +131,11 @@ public:
 		if (canMoveInDirection(matrix, direction)) {
 			eraseFromMatrix(matrix);
 
-			topRightCorner += vec { getDeltaX(direction), getDeltaY(direction) };
+			topRightCorner += getOffset(direction);
 
 			writeToMatrix(matrix);
 		}
 	}
+
+	char type;
 };

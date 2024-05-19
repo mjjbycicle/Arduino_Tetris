@@ -1,7 +1,7 @@
 #pragma once
 
 namespace input {
-	constexpr uint8_t JOYSTICK_BUTTON = 12;
+	constexpr uint8_t JOYSTICK_BUTTON = 8;
 	constexpr uint8_t JOYSTICK_X_IN = A3;
 	constexpr uint8_t JOYSTICK_Y_IN = A4;
 
