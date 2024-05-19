@@ -1,6 +1,7 @@
 #pragma once
 
 #include "matrix.h"
+#include "Vec.h"
 
 using BlockMatrix = Matrix<5, 5, char>;
 

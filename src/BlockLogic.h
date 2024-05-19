@@ -72,6 +72,11 @@ public:
 		}
 	}
 
+    template <int8_t matrixWidth, int8_t matrixHeight>
+    bool tryRotate(Matrix<matrixWidth, matrixHeight, char>& matrix, Direction newRotation){
+
+    }
+
 	template <int8_t matrixWidth, int8_t matrixHeight>
 	bool tryApplyModification (Matrix<matrixWidth, matrixHeight, char>& matrix, vec offset, Direction newRotation) {
 		eraseFromMatrix(matrix);
