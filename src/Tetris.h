@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "Arduino.h"
 #include "pitches.h"
+#include "kickTables.h"
 #include <AlmostRandom.h>
 
 namespace tetris {
@@ -192,10 +193,40 @@ namespace tetris {
 		pinMode(2, OUTPUT);
 	}
 
+    void tryKicks(const vec kickData[], Rotation direction){
+        for (int i = 0; i < 5; i++){
+            vec offset;
+            if (direction == ROTATE_90_CW){
+                offset = kickData[i];
+            }
+            else {
+                offset = vec(-kickData[i].x(), -kickData[i].y());
+            }
+            if (currBlock.tryApplyModification(
+                    gameBoard,
+                    offset,
+                    direction)){
+                return;
+            }
+        }
+    }
+
 	void tryDoRotate (Rotation direction) {
-		if (currBlock.tryRotate(gameBoard, direction)) {
-			lockCooldown.reset();
-		}
+        Rotation curr_rotation = currBlock.rotation;
+        switch (curr_rotation.get()){
+            case DIRECTION_U.get():
+                tryKicks(upToRightKickData, direction);
+                return;
+            case DIRECTION_R.get():
+                tryKicks(rightToDownKickData, direction);
+                return;
+            case DIRECTION_D.get():
+                tryKicks(downToLeftKickData, direction);
+                return;
+            case DIRECTION_L.get():
+                tryKicks(leftToUpKickData, direction);
+                return;
+        }
 	}
 
 	void tryDoMoveSide (Rotation direction) {
@@ -230,7 +261,7 @@ namespace tetris {
 	template <int8_t displayWidth, int8_t displayHeight>
 	void tetris_loop (Display<displayWidth, displayHeight>& display) {
 		if (input::isJoystickUp()) {
-			tryDoRotate(ROTATE_90_CCW);
+			tryDoRotate(ROTATE_90_CW);
 		} else if (input::isJoystickLeft()) {
 			tryDoMoveSide(DIRECTION_L);
 		} else if (input::isJoystickRight()) {
