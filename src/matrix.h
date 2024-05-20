@@ -14,6 +14,8 @@ class Matrix {
 public:
 	T elements[height][width];
 
+	constexpr Matrix() = default;
+
 	constexpr int8_t getWidth () const {
 		return width;
 	}
