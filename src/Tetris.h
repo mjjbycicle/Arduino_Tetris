@@ -55,6 +55,17 @@ namespace tetris {
 	}
 
 	template <int8_t displayWidth, int8_t displayHeight>
+	void redrawBoard (Display<displayWidth, displayHeight>& display) {
+		display.matrix().write(gameBoard, { 0, 7 });
+
+		for (int8_t x = 0; x < 10; x++) {
+			if (display.matrix()(x, 11) == 0) display.matrix()(x, 11) = 'D';
+		}
+
+		display.update();
+	}
+
+	template <int8_t displayWidth, int8_t displayHeight>
 	void restart_tetris (Display<displayWidth, displayHeight>& display) {
 		currBlock = getRandomBlock();
 		nextBlock = getRandomBlock();
@@ -76,17 +87,6 @@ namespace tetris {
 		display.matrix().write(getBlockMatrix(nextBlock.getType()), { 11, 26 });
 		redrawScore(display);
 		redrawBoard(display);
-	}
-
-	template <int8_t displayWidth, int8_t displayHeight>
-	void redrawBoard (Display<displayWidth, displayHeight>& display) {
-		display.matrix().write(gameBoard, { 0, 7 });
-
-		for (int8_t x = 0; x < 10; x++) {
-			if (display.matrix()(x, 11) == 0) display.matrix()(x, 11) = 'D';
-		}
-
-		display.update();
 	}
 
 	// TODO: refactor
