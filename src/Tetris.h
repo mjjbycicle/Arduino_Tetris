@@ -194,9 +194,12 @@ namespace tetris {
 	}
 
     void tryKicks(const vec kickData[], Rotation direction){
+        if (currBlock.tryRotate(gameBoard, direction)){
+            return;
+        }
         for (int i = 0; i < 5; i++){
             vec offset;
-            if (direction == ROTATE_90_CW){
+            if (direction.get() == ROTATE_90_CW.get()){
                 offset = kickData[i];
             }
             else {
