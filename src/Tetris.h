@@ -30,6 +30,31 @@ namespace tetris {
 	static Cooldown lockCooldown(5);
 
 	template <int8_t displayWidth, int8_t displayHeight>
+	void redrawScore (Display<displayWidth, displayHeight>& display) {
+
+		if (score >= 10000) {
+			uint8_t d4 = (score / 1000) % 10;
+			uint8_t d5 = (score / 10000) % 10;
+			uint8_t d6 = (score / 100000) % 10;
+			display.matrix().write(digits[d6], { 0, 0 });
+			display.matrix().write(digits[d5], { 4, 0 });
+			display.matrix().write(digits[d4], { 8, 0 });
+			display.matrix().write(letter_k, { 12, 0 });
+		} else {
+			uint8_t d1 = score % 10;
+			uint8_t d2 = (score / 10) % 10;
+			uint8_t d3 = (score / 100) % 10;
+			uint8_t d4 = (score / 1000) % 10;
+			display.matrix().write(digits[d4], { 0, 0 });
+			display.matrix().write(digits[d3], { 4, 0 });
+			display.matrix().write(digits[d2], { 8, 0 });
+			display.matrix().write(digits[d1], { 12, 0 });
+		}
+
+		pinMode(2, OUTPUT);
+	}
+
+	template <int8_t displayWidth, int8_t displayHeight>
 	void restart_tetris (Display<displayWidth, displayHeight>& display) {
 		currBlock = getRandomBlock();
 		nextBlock = getRandomBlock();
@@ -165,31 +190,6 @@ namespace tetris {
 			}
 		}
 		return false;
-	}
-
-	template <int8_t displayWidth, int8_t displayHeight>
-	void redrawScore (Display<displayWidth, displayHeight>& display) {
-
-		if (score >= 10000) {
-			uint8_t d4 = (score / 1000) % 10;
-			uint8_t d5 = (score / 10000) % 10;
-			uint8_t d6 = (score / 100000) % 10;
-			display.matrix().write(digits[d6], { 0, 0 });
-			display.matrix().write(digits[d5], { 4, 0 });
-			display.matrix().write(digits[d4], { 8, 0 });
-			display.matrix().write(letter_k, { 12, 0 });
-		} else {
-			uint8_t d1 = score % 10;
-			uint8_t d2 = (score / 10) % 10;
-			uint8_t d3 = (score / 100) % 10;
-			uint8_t d4 = (score / 1000) % 10;
-			display.matrix().write(digits[d4], { 0, 0 });
-			display.matrix().write(digits[d3], { 4, 0 });
-			display.matrix().write(digits[d2], { 8, 0 });
-			display.matrix().write(digits[d1], { 12, 0 });
-		}
-
-		pinMode(2, OUTPUT);
 	}
 
 	void tryDoRotate (Rotation direction) {

@@ -78,3 +78,9 @@ public:
 		return numTicksLeft == 0;
 	}
 };
+
+template<typename T, typename U>
+struct pair {
+	T first;
+	U second;
+};

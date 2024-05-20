@@ -26,6 +26,17 @@ public:
 		color_palette[c] = color;
 	}
 
+	template<typename T>
+	void setColorsInPalette(T arg) {
+		setColorInPalette(arg.first, arg.second);
+	}
+
+	template<typename T, typename ...Args>
+	void setColorsInPalette(T arg, Args... args) {
+		setColorInPalette(arg.first, arg.second);
+		setColorsInPalette(args...);
+	}
+
 	matrix_t& matrix () {
 		return matrix_;
 	}
